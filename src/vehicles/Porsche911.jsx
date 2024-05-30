@@ -4,38 +4,80 @@ Command: npx gltfjsx@6.2.16 public/models/Porsche911.glb
 */
 
 import React, { useRef } from 'react'
+import { useSnapshot } from "valtio"
+
 import { useGLTF } from '@react-three/drei'
-import { proxy, useSnapshot } from "valtio"
 import { useCustomization } from '../context/Customization';
 import { state } from '../components/ColorPicker';
 
+
 export function Porsche(props) {
+  const { nodes, materials } = useGLTF('models/Porsche911.glb')
   const { overlay } = useCustomization()
   const snap1 = useSnapshot(state)
-  const { nodes, materials } = useGLTF('/models/Porsche911.glb')
+
+  const canvasRef = useRef(document.createElement("canvas"));
+  const textureRef = useRef();
+  const context = useRef(canvasRef.current.getContext("2d"));
+console.log()
+
+  canvasRef.current.width = 1600;
+  canvasRef.current.height = 1600;
+
+  let ctx = context.current;
+
+  ctx.globalCompositeOperation = "hue";
+
+  const img = document.getElementById(`overlay${overlay}`);
+
+  if (img.complete) {
+    ctx.drawImage(img, 0, 0);
+    if (snap1.base.BaseMtl !== "none") {
+      if(overlay!==1){
+      ctx.fillStyle = snap1.base.BaseMtl;
+      ctx.fillRect(0, 0, 1600, 1600);
+      }
+    }
+
+
+    if (textureRef.current) {
+      textureRef.current.needsUpdate = true;
+    }
+  }
+
+  else {
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+      if (snap1.base.BaseMtl !== "none") {
+        if(overlay!==1){
+        ctx.fillStyle = snap1.base.BaseMtl;
+        ctx.fillRect(0, 0, 1600, 1600);
+        }
+      }
+      
+
+
+      if (textureRef.current) {
+        textureRef.current.needsUpdate = true;
+      }
+    }
+  }
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.body.geometry} material={materials.BaseMtl} material-color={snap1.base.BaseMtl} visible={overlay === 1}/>
+      <mesh geometry={nodes.body.geometry}>
+        <meshStandardMaterial {...materials.BaseMtl} color={overlay==1 || overlay==13 ? (snap1.base.BaseMtl!=="none" ? snap1.base.BaseMtl : 0xffffff) : 0xffffff}>
+          <canvasTexture
+            flipY={false}
+            wrapS={1000}
+            wrapT={1000}
+            colorSpace='srgb'
+            ref={textureRef}
+            attach="map"
+            image={canvasRef.current}
+          />
+        </meshStandardMaterial>
+      </mesh>
       <mesh geometry={nodes.mirrors.geometry} material={materials.Body_paint_Jet_black} />
-      <mesh geometry={nodes.body001.geometry} material={materials['Slaughter.001']} material-color={snap1.base.BaseMtl} visible={overlay === 2}/>
-      <mesh geometry={nodes.body002.geometry} material={materials.BatLady} material-color={snap1.base.BaseMtl} visible={overlay === 3}/>
-      <mesh geometry={nodes.body003.geometry} material={materials.BrakeLine} material-color={snap1.base.BaseMtl} visible={overlay === 4}/>
-      <mesh geometry={nodes.body004.geometry} material={materials.Danger} material-color={snap1.base.BaseMtl} visible={overlay === 5}/>
-      <mesh geometry={nodes.body005.geometry} material={materials.Embers} material-color={snap1.base.BaseMtl} visible={overlay === 6}/>
-      <mesh geometry={nodes.body006.geometry} material={materials['SpiderID.001']} material-color={snap1.base.BaseMtl} visible={overlay === 7}/>
-      <mesh geometry={nodes.body007.geometry} material={materials.Fluid} material-color={snap1.base.BaseMtl} visible={overlay === 8}/>
-      <mesh geometry={nodes.body008.geometry} material={materials.HotRods} material-color={snap1.base.BaseMtl} visible={overlay === 9}/>
-      <mesh geometry={nodes.body009.geometry} material={materials['Mayan.001']} material-color={snap1.base.BaseMtl} visible={overlay === 10}/>
-      <mesh geometry={nodes.body010.geometry} material={materials['SeaBreeze.001']} material-color={snap1.base.BaseMtl} visible={overlay === 11}/>
-      <mesh geometry={nodes.body011.geometry} material={materials['ShapeShifter.001']} material-color={snap1.base.BaseMtl} visible={overlay === 12}/>
-      <mesh geometry={nodes.body012.geometry} material={materials['Silk.001']} material-color={snap1.base.BaseMtl} visible={overlay === 13}/>
-      <mesh geometry={nodes.body013.geometry} material={materials['SnakeSkin.001']} material-color={snap1.base.BaseMtl} visible={overlay === 14}/>
-      <mesh geometry={nodes.body014.geometry} material={materials.Flare} material-color={snap1.base.BaseMtl} visible={overlay === 15}/>
-      <mesh geometry={nodes.body015.geometry} material={materials.Dominator} material-color={snap1.base.BaseMtl} visible={overlay === 16}/>
-      <mesh geometry={nodes.body016.geometry} material={materials['TopGun.001']} material-color={snap1.base.BaseMtl} visible={overlay === 17}/>
-      <mesh geometry={nodes.body017.geometry} material={materials.Explosion} material-color={snap1.base.BaseMtl} visible={overlay === 18}/>
-      <mesh geometry={nodes.body018.geometry} material={materials['WildWest.001']} material-color={snap1.base.BaseMtl} visible={overlay === 19}/>
-      <mesh geometry={nodes.body019.geometry} material={materials['Zombie.001']} material-color={snap1.base.BaseMtl} visible={overlay === 20}/>
       <mesh geometry={nodes.Object_133.geometry} material={materials.Fabric} />
       <mesh geometry={nodes.Object_133_1.geometry} material={materials['Plastic_-_Glossy_Black']} />
       <mesh geometry={nodes.Object_133_2.geometry} material={materials['Metal_-_Chrome']} />
