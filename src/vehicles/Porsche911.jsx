@@ -117,4 +117,4 @@ console.log()
   )
 }
 
-useGLTF.preload('/models/Porsche911.glb')
+useGLTF.preload('/Porsche911.glb')
