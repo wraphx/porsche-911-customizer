@@ -6,7 +6,7 @@ import ColorPicker from './ColorPicker';
 import TexturePaths from './TexturePaths';
 
 const options = [
-    { value: 1, label: 'Raven', image: '/options/raven.png' }, 
+    { value: 1, label: 'Raven', image: '/options/raven.png' },
     { value: 2, label: 'Absolute Slaughter', image: '/options/slaughter.png' },
     { value: 3, label: 'Bat Lady', image: '/options/bats.png' },
     { value: 4, label: 'Brake Line', image: '/options/brakeline.png' },
